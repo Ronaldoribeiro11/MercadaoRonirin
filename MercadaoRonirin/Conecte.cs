@@ -37,7 +37,11 @@ namespace MercadaoRonirin
         {
             return con;
         }
-
-
+        // Implementação do método Dispose para liberar recursos
+        public void Dispose()
+        {
+            CloseConnection();
+        }
     }
 }
+       

@@ -36,6 +36,8 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.PanalCad = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnCad = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
@@ -51,12 +53,15 @@
             this.TxtRecEmail = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
+            this.pancod = new System.Windows.Forms.Panel();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btncod = new System.Windows.Forms.Button();
+            this.txtcod = new System.Windows.Forms.TextBox();
             this.PanalCad.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.PanelRecEmail.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.pancod.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -64,16 +69,18 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(462, 374);
+            this.label1.Location = new System.Drawing.Point(461, 374);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(58, 23);
             this.label1.TabIndex = 0;
             this.label1.Text = "Login";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // txtLogLog
             // 
             this.txtLogLog.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLogLog.Location = new System.Drawing.Point(466, 400);
+            this.txtLogLog.Location = new System.Drawing.Point(467, 400);
+            this.txtLogLog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtLogLog.Name = "txtLogLog";
             this.txtLogLog.Size = new System.Drawing.Size(341, 42);
             this.txtLogLog.TabIndex = 1;
@@ -81,7 +88,8 @@
             // txtSenhaLog
             // 
             this.txtSenhaLog.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSenhaLog.Location = new System.Drawing.Point(466, 493);
+            this.txtSenhaLog.Location = new System.Drawing.Point(467, 494);
+            this.txtSenhaLog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtSenhaLog.Name = "txtSenhaLog";
             this.txtSenhaLog.Size = new System.Drawing.Size(341, 42);
             this.txtSenhaLog.TabIndex = 3;
@@ -92,7 +100,7 @@
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(462, 467);
+            this.label2.Location = new System.Drawing.Point(461, 466);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 23);
             this.label2.TabIndex = 2;
@@ -101,12 +109,14 @@
             // btnLog
             // 
             this.btnLog.Font = new System.Drawing.Font("Times New Roman", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLog.Location = new System.Drawing.Point(550, 574);
+            this.btnLog.Location = new System.Drawing.Point(549, 574);
+            this.btnLog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnLog.Name = "btnLog";
             this.btnLog.Size = new System.Drawing.Size(159, 69);
             this.btnLog.TabIndex = 4;
             this.btnLog.Text = "ENTRAR";
             this.btnLog.UseVisualStyleBackColor = true;
+            this.btnLog.Click += new System.EventHandler(this.btnLog_Click);
             // 
             // linkLabel1
             // 
@@ -114,7 +124,7 @@
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.BackColor = System.Drawing.Color.Transparent;
             this.linkLabel1.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel1.Location = new System.Drawing.Point(463, 445);
+            this.linkLabel1.Location = new System.Drawing.Point(463, 446);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(66, 16);
             this.linkLabel1.TabIndex = 5;
@@ -134,7 +144,7 @@
             this.linkLabel2.TabIndex = 6;
             this.linkLabel2.TabStop = true;
             this.linkLabel2.Text = "Esqueceu a senha?";
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked_1);
             // 
             // PanalCad
             // 
@@ -151,15 +161,43 @@
             this.PanalCad.Controls.Add(this.txtSenhaCad);
             this.PanalCad.Controls.Add(this.txtEmailCad);
             this.PanalCad.Location = new System.Drawing.Point(1, 73);
+            this.PanalCad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PanalCad.Name = "PanalCad";
             this.PanalCad.Size = new System.Drawing.Size(445, 607);
             this.PanalCad.TabIndex = 7;
             this.PanalCad.Visible = false;
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(44, 409);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(73, 23);
+            this.label9.TabIndex = 14;
+            this.label9.Text = "Serviço";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Caixa",
+            "Estacionamento",
+            "Estoque"});
+            this.comboBox1.Location = new System.Drawing.Point(44, 434);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(341, 43);
+            this.comboBox1.TabIndex = 13;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::MercadaoRonirin.Properties.Resources.Mercadin__2__removebg_preview;
             this.pictureBox1.Location = new System.Drawing.Point(-191, 0);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(828, 162);
             this.pictureBox1.TabIndex = 12;
@@ -169,6 +207,7 @@
             // 
             this.btnCad.Font = new System.Drawing.Font("Times New Roman", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCad.Location = new System.Drawing.Point(100, 501);
+            this.btnCad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCad.Name = "btnCad";
             this.btnCad.Size = new System.Drawing.Size(225, 69);
             this.btnCad.TabIndex = 8;
@@ -191,16 +230,18 @@
             // 
             this.txtLoginCad.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLoginCad.Location = new System.Drawing.Point(44, 191);
+            this.txtLoginCad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtLoginCad.Name = "txtLoginCad";
             this.txtLoginCad.Size = new System.Drawing.Size(341, 42);
             this.txtLoginCad.TabIndex = 10;
+            this.txtLoginCad.TextChanged += new System.EventHandler(this.txtLoginCad_TextChanged);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(-378, 224);
+            this.label6.Location = new System.Drawing.Point(-379, 224);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(61, 23);
             this.label6.TabIndex = 11;
@@ -232,6 +273,7 @@
             // 
             this.txtSenhaCad.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSenhaCad.Location = new System.Drawing.Point(44, 353);
+            this.txtSenhaCad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtSenhaCad.Name = "txtSenhaCad";
             this.txtSenhaCad.Size = new System.Drawing.Size(341, 42);
             this.txtSenhaCad.TabIndex = 9;
@@ -240,7 +282,8 @@
             // txtEmailCad
             // 
             this.txtEmailCad.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmailCad.Location = new System.Drawing.Point(44, 275);
+            this.txtEmailCad.Location = new System.Drawing.Point(44, 274);
+            this.txtEmailCad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtEmailCad.Name = "txtEmailCad";
             this.txtEmailCad.Size = new System.Drawing.Size(341, 42);
             this.txtEmailCad.TabIndex = 8;
@@ -249,12 +292,14 @@
             // 
             this.PanelRecEmail.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.PanelRecEmail.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.PanelRecEmail.Controls.Add(this.pancod);
             this.PanelRecEmail.Controls.Add(this.pictureBox2);
             this.PanelRecEmail.Controls.Add(this.BtnRecEmail);
             this.PanelRecEmail.Controls.Add(this.TxtRecEmail);
             this.PanelRecEmail.Controls.Add(this.label7);
             this.PanelRecEmail.Controls.Add(this.label8);
             this.PanelRecEmail.Location = new System.Drawing.Point(832, 73);
+            this.PanelRecEmail.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PanelRecEmail.Name = "PanelRecEmail";
             this.PanelRecEmail.Size = new System.Drawing.Size(445, 607);
             this.PanelRecEmail.TabIndex = 13;
@@ -266,8 +311,9 @@
             this.pictureBox2.BackgroundImage = global::MercadaoRonirin.Properties.Resources.Recuperar_senha_removebg_preview;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.pictureBox2.Location = new System.Drawing.Point(92, 42);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(298, 256);
+            this.pictureBox2.Size = new System.Drawing.Size(299, 256);
             this.pictureBox2.TabIndex = 13;
             this.pictureBox2.TabStop = false;
             // 
@@ -275,16 +321,19 @@
             // 
             this.BtnRecEmail.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnRecEmail.Location = new System.Drawing.Point(136, 379);
+            this.BtnRecEmail.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.BtnRecEmail.Name = "BtnRecEmail";
-            this.BtnRecEmail.Size = new System.Drawing.Size(174, 53);
+            this.BtnRecEmail.Size = new System.Drawing.Size(173, 53);
             this.BtnRecEmail.TabIndex = 15;
             this.BtnRecEmail.Text = "Enviar Codigo";
             this.BtnRecEmail.UseVisualStyleBackColor = true;
+            this.BtnRecEmail.Click += new System.EventHandler(this.BtnRecEmail_Click);
             // 
             // TxtRecEmail
             // 
             this.TxtRecEmail.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TxtRecEmail.Location = new System.Drawing.Point(60, 327);
+            this.TxtRecEmail.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TxtRecEmail.Name = "TxtRecEmail";
             this.TxtRecEmail.Size = new System.Drawing.Size(341, 42);
             this.TxtRecEmail.TabIndex = 14;
@@ -294,7 +343,7 @@
             this.label7.AutoSize = true;
             this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(56, 301);
+            this.label7.Location = new System.Drawing.Point(56, 302);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(144, 23);
             this.label7.TabIndex = 14;
@@ -305,36 +354,58 @@
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(-378, 224);
+            this.label8.Location = new System.Drawing.Point(-379, 224);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(61, 23);
             this.label8.TabIndex = 11;
             this.label8.Text = "Senha";
             // 
-            // comboBox1
+            // pancod
             // 
-            this.comboBox1.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Caixa",
-            "Estacionamento",
-            "Estoque"});
-            this.comboBox1.Location = new System.Drawing.Point(44, 435);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(341, 43);
-            this.comboBox1.TabIndex = 13;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.pancod.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.pancod.Controls.Add(this.label10);
+            this.pancod.Controls.Add(this.btncod);
+            this.pancod.Controls.Add(this.txtcod);
+            this.pancod.Location = new System.Drawing.Point(3, 501);
+            this.pancod.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pancod.Name = "pancod";
+            this.pancod.Size = new System.Drawing.Size(445, 386);
+            this.pancod.TabIndex = 14;
+            this.pancod.Visible = false;
+            this.pancod.Paint += new System.Windows.Forms.PaintEventHandler(this.pancod_Paint);
             // 
-            // label9
+            // label10
             // 
-            this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.Color.Transparent;
-            this.label9.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(44, 409);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(73, 23);
-            this.label9.TabIndex = 14;
-            this.label9.Text = "Serviço";
+            this.label10.AutoSize = true;
+            this.label10.BackColor = System.Drawing.Color.Transparent;
+            this.label10.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(21, 146);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(400, 23);
+            this.label10.TabIndex = 15;
+            this.label10.Text = "Insira o codigo de verificação enviado no email";
+            // 
+            // btncod
+            // 
+            this.btncod.Font = new System.Drawing.Font("Times New Roman", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btncod.Location = new System.Drawing.Point(119, 272);
+            this.btncod.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btncod.Name = "btncod";
+            this.btncod.Size = new System.Drawing.Size(225, 69);
+            this.btncod.TabIndex = 15;
+            this.btncod.Text = "Cadastrar";
+            this.btncod.UseVisualStyleBackColor = true;
+            this.btncod.Click += new System.EventHandler(this.btncod_Click);
+            // 
+            // txtcod
+            // 
+            this.txtcod.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtcod.Location = new System.Drawing.Point(63, 198);
+            this.txtcod.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.txtcod.Name = "txtcod";
+            this.txtcod.Size = new System.Drawing.Size(341, 42);
+            this.txtcod.TabIndex = 15;
+            this.txtcod.UseSystemPasswordChar = true;
             // 
             // Login
             // 
@@ -342,7 +413,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::MercadaoRonirin.Properties.Resources.Mercadin__1_;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1262, 753);
+            this.ClientSize = new System.Drawing.Size(1261, 753);
             this.Controls.Add(this.PanelRecEmail);
             this.Controls.Add(this.PanalCad);
             this.Controls.Add(this.linkLabel2);
@@ -352,7 +423,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtLogLog);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Login";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = " ";
             this.Load += new System.EventHandler(this.Login_Load);
             this.PanalCad.ResumeLayout(false);
@@ -361,6 +434,8 @@
             this.PanelRecEmail.ResumeLayout(false);
             this.PanelRecEmail.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.pancod.ResumeLayout(false);
+            this.pancod.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -393,6 +468,10 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Panel pancod;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btncod;
+        private System.Windows.Forms.TextBox txtcod;
     }
 }
 

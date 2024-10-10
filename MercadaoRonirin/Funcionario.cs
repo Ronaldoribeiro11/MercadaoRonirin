@@ -17,15 +17,13 @@ namespace MercadaoRonirin
             public string Login { get; set; }
             public string Email { get; set; }
             private string Senha { get; set; } // Senha criptografada
-            private string TipoFuncionario { get; set; }
 
         // Construtor
-        public Funcionarios(string login, string email, string senha,string tipofuncionario)
+        public Funcionarios(string login, string email, string senha)
             {
                 Login = login;
                 Email = email;
                 Senha = CriptografarSenha(senha);
-                TipoFuncionario = tipofuncionario;
             }
 
             // Método para criptografar a senha
@@ -48,14 +46,12 @@ namespace MercadaoRonirin
                 using (SqlConnection conexao = new SqlConnection(stringConnection))
                 {
                     conexao.Open();
-
                     SqlCommand sqlCommand = new SqlCommand();
                     sqlCommand.Connection = conexao;
-                    sqlCommand.CommandText = @"INSERT INTO Funcionarios VALUES (@Login, @Email, @Senha, @TipoServico)";
+                    sqlCommand.CommandText = @"INSERT INTO Funcionarios VALUES (@Login, @Email, @Senha)";
                     sqlCommand.Parameters.AddWithValue("@Login", Login);
                     sqlCommand.Parameters.AddWithValue("@Email", Email);
                     sqlCommand.Parameters.AddWithValue("@Senha", Senha);
-                    sqlCommand.Parameters.AddWithValue("@TipoServico", TipoFuncionario);
                     sqlCommand.ExecuteNonQuery();
                 }
             }

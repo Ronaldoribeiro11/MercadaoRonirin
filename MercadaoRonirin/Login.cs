@@ -21,61 +21,12 @@ namespace MercadaoRonirin
             InitializeComponent();
 
         }
-        //private bool IsValidEmail(string email)
-        //{
-        //    try
-        //    {
-        //        var addr = new System.Net.Mail.MailAddress(email);
-        //        return addr.Address == email;
-        //    }
-        //    catch
-        //    {
-        //        return false;
-        //    }
-        //}
-        //private string GerarCodigoAleatorio(int tamanho)
-        //{
-        //    Random random = new Random();
-        //    string codigo = string.Empty;
-        //    for (int i = 0; i < tamanho; i++)
-        //    {
-        //        codigo += random.Next(0, 10).ToString();
-        //    }
-        //    return codigo;
-        //}
-        //private bool EnviarEmail(string email, string codigo)
-        //{
-        //    try
-        //    {
-        //        var message = new MimeMessage();
-        //        message.From.Add(new MailboxAddress("Ronaldo Ribeiro", "cafezinroniro@gmail.com"));
-        //        message.To.Add(new MailboxAddress("Destinatário", email));
-        //        message.Subject = "Código de Verificação";
-
-        //        message.Body = new TextPart("plain")
-        //        {
-        //            Text = $"Seu código de verificação é: {codigo}"
-        //        };
-
-        //        using (var client = new SmtpClient())
-        //        {
-        //            client.Connect("smtp.mail.yahoo.com", 465, MailKit.Security.SecureSocketOptions.StartTls);
-        //            client.Authenticate("mercadoroniro@yahoo.com", "Rere4321");
-
-        //            client.Send(message);
-        //            client.Disconnect(true);
-        //        }
-
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Erro ao enviar email: " + ex.Message);
-        //        return false;
-        //    }
-        //}
-        //private void label4_Click(object sender, EventArgs e)
-
+        public string CodigoInserido { get; private set; }
+        public static string GerarCodigoVerificacao()
+        {
+            Random random = new Random();
+            return random.Next(100000, 999999).ToString();
+        }
 
 
         private void label5_Click(object sender, EventArgs e)
@@ -93,68 +44,53 @@ namespace MercadaoRonirin
             PanalCad.Location = new Point(306, 60);
             PanalCad.Show();
         }
-
-        private void btnCad_Click(object sender, EventArgs e)
+        private void btnConfirmar_Click(object sender, EventArgs e)
         {
+            CodigoInserido = txtcod.Text;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private async void btnCad_Click(object sender, EventArgs e)
+        {
+         
+
             string login = txtLoginCad.Text;
             string email = txtEmailCad.Text;
             string senha = txtSenhaCad.Text;
+
             //string tipofuncionario = comboBox1.SelectedItem;
+
+
+            if (string.IsNullOrEmpty(login))
             {
 
-                if (string.IsNullOrEmpty(login))
+                MessageBox.Show("Insira um login");
+                if (string.IsNullOrEmpty(email))
                 {
-                    MessageBox.Show("Insira um login");
-                    if (string.IsNullOrEmpty(email))
+                    MessageBox.Show("Insira um email");
+                    if (string.IsNullOrEmpty(senha))
                     {
-                        MessageBox.Show("Insira um email");
-                        if (string.IsNullOrEmpty(login))
-                        {
-                            MessageBox.Show("insira uma senha");
-                        }
-
-
-
+                        MessageBox.Show("insira uma senha");
                     }
+                    else
+                    {
+                        Funcionarios novoFuncionario = new Funcionarios("Login", "Email", "Senha");
 
+                        // Salvando o funcionário no banco de dados
+                        novoFuncionario.SalvarNoBancoDeDados();
+
+                        Console.WriteLine("Funcionário salvo com sucesso!");
+                    }
                 }
 
-                else
-                { 
-                    Funcionarios funcionarios = new Funcionarios(login, email, senha, tipofuncionario);
-                    funcionarios.SalvarNoBancoDeDados();
-                    Console.WriteLine("Usuario Cadastrado");
-                }
-        //        {
+            }
 
-                    //            // Salvar dados no banco de dados aqui
-                    //            string stringConnection = @"Data Source="
-                    //          + Environment.MachineName +
-                    //          @";Initial Catalog=
-                    //           MercadoRonirin;Integrated Security=true";
-                    //            using (SqlConnection conexao = new SqlConnection(stringConnection))
-                    //            {
-                    //                conexao.Open();
-
-                    //                SqlCommand sqlCommand = new SqlCommand();
-                    //                sqlCommand.Connection = conexao;
-                    //                sqlCommand.CommandText = @"INSERT INTO Funcionario VALUES (@Login, @Email, @Senha)";
-                    //                sqlCommand.Parameters.AddWithValue("@Login", login);
-                    //                sqlCommand.Parameters.AddWithValue("@Email", email);
-                    //                sqlCommand.Parameters.AddWithValue("@Senha", senha);
-                    //                sqlCommand.ExecuteNonQuery();
-                    //            }
-                    //            PanalCad.Location = new Point(360, 60);
-                    //            PanalCad.Hide();
-                    //            // Outras ações após o cadastro aqui
-                    //            MessageBox.Show("Cadastro realizado com sucesso! 😊");
-
-
-                    //        }
-        } 
-
-         
         }
+    
+            
+        
+
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -164,6 +100,42 @@ namespace MercadaoRonirin
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+        }
+
+        private void pancod_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btnLog_Click(object sender, EventArgs e)
+        {
+            PontoVenda pontoVenda = new PontoVenda();
+            pontoVenda.Show();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtLoginCad_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+
+        }
+
+        private void btncod_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnRecEmail_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
