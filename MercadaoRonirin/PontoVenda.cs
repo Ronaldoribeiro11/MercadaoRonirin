@@ -15,13 +15,16 @@ namespace MercadaoRonirin
 {
     public partial class PontoVenda : Form
     {
-        public PontoVenda()
+        private int idoperador;
+        public PontoVenda(int Idoperador)
         {
             InitializeComponent();
-
+            idoperador = Idoperador;
+            this.KeyPreview = true;
         }
 
         private int? idVendaAtual = null;
+
 
         private void PontoVenda_Load(object sender, EventArgs e)
         {
@@ -85,7 +88,19 @@ namespace MercadaoRonirin
                 }
 
                 // Exibe o valor total da compra formatado como moeda
-                TxtValTroco.Text = valorTotalCompra.ToString("C"); // Exibe o valor total da compra
+                lblValorTotal.Text = valorTotalCompra.ToString("C"); // Exibe o valor total da compra
+
+                // Atualiza o valor total na tabela Vendas
+                Conecte conexao = new Conecte();
+                string queryAtualizaVenda = "UPDATE Vendas SET Total_Venda = @Total_Venda WHERE ID_Venda = @ID_Venda";
+
+                using (var cmd = new SqlCommand(queryAtualizaVenda, conexao.ReturnConnection()))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@Total_Venda", SqlDbType.Decimal) { Value = valorTotalCompra });
+                    cmd.Parameters.Add(new SqlParameter("@ID_Venda", SqlDbType.Int) { Value = idVendaAtual });
+
+                    cmd.ExecuteNonQuery();
+                }
             }
             else
             {
@@ -103,30 +118,58 @@ namespace MercadaoRonirin
                 int quantidade = int.Parse(txtQuantidade.Text);
                 decimal valorTotalItem = valorUnitario * quantidade;
 
-                // Query de inserção
-                string query = "INSERT INTO Vendas (CodigoBarras, Quantidade, ValorTotal) " +
-                               "VALUES (@CodigoBarras, @Quantidade, @ValorTotal)";
+                // Obtém o produto com base no código de barras
+                var repository = new ProdutoRepository();
+                var produto = repository.ObterProdutoPorCodigoBarras(txtCodigoBarras.Text);
 
-                using (var cmd = new SqlCommand(query, conexao.ReturnConnection()))
+                // Verifica se o produto foi encontrado
+                if (produto == null)
                 {
-                    // Adicionando parâmetros
-                    cmd.Parameters.Add(new SqlParameter("@CodigoBarras", SqlDbType.VarChar) { Value = txtCodigoBarras.Text });
-                    cmd.Parameters.Add(new SqlParameter("@Quantidade", SqlDbType.Int) { Value = quantidade });
-                    cmd.Parameters.Add(new SqlParameter("@ValorTotal", SqlDbType.Decimal) { Value = valorTotalItem });
+                    MessageBox.Show("Produto não encontrado.");
+                    return;
+                }
 
-                    // Executa a query
-                    cmd.ExecuteNonQuery();
+                // Verifica se já existe uma venda aberta (idVendaAtual) ou cria uma nova
+                if (idVendaAtual == null)
+                {
+                    string queryVenda = "INSERT INTO Vendas (Data_Venda, Total_Venda, ID_Operador_Caixa) " +
+                                        "OUTPUT INSERTED.ID_Venda " + // Obter o ID da venda recém-criada
+                                        "VALUES (@Data_Venda, @Total_Venda, @ID_Operador_Caixa)";
+
+                    using (var cmd = new SqlCommand(queryVenda, conexao.ReturnConnection()))
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@Data_Venda", SqlDbType.DateTime) { Value = DateTime.Now });
+                        cmd.Parameters.Add(new SqlParameter("@Total_Venda", SqlDbType.Decimal) { Value = 0 }); // O valor total será atualizado mais tarde
+                        cmd.Parameters.Add(new SqlParameter("@ID_Operador_Caixa", SqlDbType.Int) { Value = idoperador}); // Passa o ID do operador logado
+
+                        // Executa a query e obtém o ID da nova venda
+                        idVendaAtual = (int)cmd.ExecuteScalar();
+                    }
+                }
+
+                // Agora adiciona o item à tabela Itens_Venda
+                string queryItemVenda = "INSERT INTO Itens_Venda (ID_Venda, ID_Produto, Quantidade, Preco_Venda_Unitario) " +
+                                        "VALUES (@ID_Venda, @ID_Produto, @Quantidade, @Preco_Venda_Unitario)";
+
+                using (var cmd = new SqlCommand(queryItemVenda, conexao.ReturnConnection()))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@ID_Venda", SqlDbType.Int) { Value = idVendaAtual });
+                    cmd.Parameters.Add(new SqlParameter("@ID_Produto", SqlDbType.Int) { Value = produto.ID_Produto }); // Usa o ID do produto
+                    cmd.Parameters.Add(new SqlParameter("@Quantidade", SqlDbType.Int) { Value = quantidade });
+                    cmd.Parameters.Add(new SqlParameter("@Preco_Venda_Unitario", SqlDbType.Decimal) { Value = valorUnitario });
+
+                    cmd.ExecuteNonQuery(); // Insere o item da venda
                 }
 
                 // Adiciona o produto à ListView
                 var item = new ListViewItem(new[]
                 {
-        txtCodigoBarras.Text,
-        txtNomeProduto.Text,
-        valorUnitario.ToString("F2"),
-        quantidade.ToString(),
-        valorTotalItem.ToString("F2") // Valor total do item
-    });
+            txtCodigoBarras.Text,
+            txtNomeProduto.Text,
+            valorUnitario.ToString("F2"),
+            quantidade.ToString(),
+            valorTotalItem.ToString("F2") // Valor total do item
+        });
                 listViewProdutos.Items.Add(item); // Adiciona à ListView
 
                 AtualizarValorTotalCompra(); // Atualiza o valor total da compra
@@ -143,10 +186,6 @@ namespace MercadaoRonirin
                 MessageBox.Show("Erro ao adicionar produto: " + ex.Message + "\n" + ex.StackTrace); // Mensagem de erro com mais detalhes
             }
         }
-
-
-
-
 
         private void dgvProdutos_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -170,7 +209,19 @@ namespace MercadaoRonirin
 
         private void listViewProdutos_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            
+            
+                // Verifica se algum item foi selecionado
+                if (listViewProdutos.SelectedItems.Count > 0)
+                {
+                    // Preenche os campos com os dados do produto selecionado
+                    var itemSelecionado = listViewProdutos.SelectedItems[0];
+                    txtCodigoBarras.Text = itemSelecionado.SubItems[0].Text; // Código de barras
+                    txtNomeProduto.Text = itemSelecionado.SubItems[1].Text; // Nome do produto
+                    txtValorUnitario.Text = itemSelecionado.SubItems[2].Text; // Valor unitário
+                    txtQuantidade.Text = itemSelecionado.SubItems[3].Text; // Quantidade
+                }
+            
         }
 
         private void txtQuantidade_KeyDown_1(object sender, KeyEventArgs e)
@@ -202,26 +253,168 @@ namespace MercadaoRonirin
         }
         private void CalcularTroco()
         {
-            // Verifica se o valor total está disponível
-            if (decimal.TryParse(lblValorTotal.Text, NumberStyles.Currency, CultureInfo.CurrentCulture, out decimal valorTotal) &&
-                decimal.TryParse(TxtValPag.Text, out decimal valorRecebido))
-            {
-                if (valorRecebido >= valorTotal)
-                {
-                    // Calcula o troco
-                    decimal troco = valorRecebido - valorTotal;
 
-                    // Exibe o troco formatado como moeda
-                    TrocoTxt.Text = troco.ToString("C");
-                } 
+            
+                // Verifica se o valor total está disponível
+                if (decimal.TryParse(lblValorTotal.Text, NumberStyles.Currency, CultureInfo.CurrentCulture, out decimal valorTotal) &&
+                    decimal.TryParse(TxtValPag.Text, out decimal valorRecebido))
+                {
+                    if (valorRecebido >= valorTotal)
+                    {
+                        // Calcula o troco
+                        decimal troco = valorRecebido - valorTotal;
+
+                        // Exibe o troco formatado como moeda
+                        TrocoTxt.Text = troco.ToString("C");
+
+                        // Atualiza a tabela Pagamentos
+                        Conecte conexao = new Conecte();
+                        string queryPagamento = "INSERT INTO Pagamentos (ID_Venda, Metodo_Pagamento, Valor_Pago, Troco) " +
+                                                "VALUES (@ID_Venda, @Metodo_Pagamento, @Valor_Pago, @Troco)";
+
+                        using (var cmd = new SqlCommand(queryPagamento, conexao.ReturnConnection()))
+                        {
+                            cmd.Parameters.Add(new SqlParameter("@ID_Venda", SqlDbType.Int) { Value = idVendaAtual });
+                            cmd.Parameters.Add(new SqlParameter("@Metodo_Pagamento", SqlDbType.VarChar) { Value = "Dinheiro" }); // Pode ser ajustado conforme necessário
+                            cmd.Parameters.Add(new SqlParameter("@Valor_Pago", SqlDbType.Decimal) { Value = valorRecebido });
+                            cmd.Parameters.Add(new SqlParameter("@Troco", SqlDbType.Decimal) { Value = troco });
+
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("O valor recebido não pode ser menor que o valor total.");
+                    }
+                }
                 else
                 {
-                    MessageBox.Show("O valor recebido não pode ser menor que o valor total.");
+                    MessageBox.Show("Valores inválidos. Por favor, insira corretamente o valor recebido.");
+                }
+            
+
+        }
+
+        private void btnFinalizarCompra_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void PontoVenda_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            // Verifica se a tecla pressionada foi "Enter"
+            if (e.KeyCode == Keys.Enter && listViewProdutos.SelectedItems.Count > 0)
+            {
+                // Preenche os campos com os dados do item selecionado
+                var itemSelecionado = listViewProdutos.SelectedItems[0];
+                txtCodigoBarras.Text = itemSelecionado.SubItems[0].Text;
+                txtNomeProduto.Text = itemSelecionado.SubItems[1].Text;
+                txtValorUnitario.Text = itemSelecionado.SubItems[2].Text;
+                txtQuantidade.Text = itemSelecionado.SubItems[3].Text;
+            }
+
+            // Verifica se a tecla pressionada foi "Delete"
+            if (e.KeyCode == Keys.Delete && listViewProdutos.SelectedItems.Count > 0)
+            {
+                // Remove o item selecionado da ListView
+                listViewProdutos.Items.Remove(listViewProdutos.SelectedItems[0]);
+                AtualizarValorTotalCompra(); // Atualiza o valor total após a remoção
+            }
+        }
+        private void PreencherCamposParaEdicao()
+        {
+            if (listViewProdutos.SelectedItems.Count > 0)
+            {
+                var itemSelecionado = listViewProdutos.SelectedItems[0];
+
+                // Preenche os campos com os dados do item
+                txtCodigoBarras.Text = itemSelecionado.SubItems[0].Text;
+                txtNomeProduto.Text = itemSelecionado.SubItems[1].Text;
+                txtValorUnitario.Text = itemSelecionado.SubItems[2].Text;
+                txtQuantidade.Text = itemSelecionado.SubItems[3].Text;
+
+                // Remove o item da ListView (opcional, para evitar duplicação ao salvar novamente)
+                listViewProdutos.Items.Remove(itemSelecionado);
+
+                MessageBox.Show("Campos preenchidos para edição. Faça as alterações e clique em salvar.");
+            }
+            else
+            {
+                MessageBox.Show("Selecione um item para editar.");
+            }
+        }
+        private void RemoverItemSelecionado()
+        {
+            if (listViewProdutos.SelectedItems.Count > 0)
+            {
+                var itemSelecionado = listViewProdutos.SelectedItems[0];
+
+                // Confirmação de exclusão
+                DialogResult confirmacao = MessageBox.Show(
+                    "Deseja realmente excluir o item selecionado?",
+                    "Excluir Item",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
+
+                if (confirmacao == DialogResult.Yes)
+                {
+                    listViewProdutos.Items.Remove(itemSelecionado); // Remove o item
+                    MessageBox.Show("Item excluído com sucesso.");
                 }
             }
             else
             {
-                MessageBox.Show("Valores inválidos. Por favor, insira corretamente o valor recebido.");
+                MessageBox.Show("Selecione um item para excluir.");
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (listViewProdutos.SelectedItems.Count > 0)
+            {
+                // Obtém o item selecionado
+                var itemSelecionado = listViewProdutos.SelectedItems[0];
+
+                // Atualiza os valores no item selecionado
+                itemSelecionado.SubItems[0].Text = txtCodigoBarras.Text;   // Atualiza o código de barras
+                itemSelecionado.SubItems[1].Text = txtNomeProduto.Text;     // Atualiza o nome do produto
+                itemSelecionado.SubItems[2].Text = txtValorUnitario.Text;   // Atualiza o valor unitário
+                itemSelecionado.SubItems[3].Text = txtQuantidade.Text;      // Atualiza a quantidade
+
+                // Limpa os campos após a edição
+                txtCodigoBarras.Clear();
+                txtNomeProduto.Clear();
+                txtValorUnitario.Clear();
+                txtQuantidade.Clear();
+
+                // Refoca no campo Código de Barras
+                txtCodigoBarras.Focus();
+            }
+            else
+            {
+                MessageBox.Show("Selecione um produto para editar.");
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (listViewProdutos.SelectedItems.Count > 0)
+            {
+                // Remove o item selecionado da ListView
+                listViewProdutos.Items.Remove(listViewProdutos.SelectedItems[0]);
+
+                // Atualiza o valor total da compra (caso haja essa funcionalidade)
+                AtualizarValorTotalCompra();
+            }
+            else
+            {
+                MessageBox.Show("Selecione um produto para deletar.");
             }
         }
     }

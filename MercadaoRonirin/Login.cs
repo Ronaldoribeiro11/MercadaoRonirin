@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MailKit.Net.Smtp;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace MercadaoRonirin
 {
@@ -21,12 +22,52 @@ namespace MercadaoRonirin
             InitializeComponent();
 
         }
+
         public string CodigoInserido { get; private set; }
         public static string GerarCodigoVerificacao()
         {
             Random random = new Random();
             return random.Next(100000, 999999).ToString();
         }
+
+        private bool ValidarCamposOperador()
+        {
+            if (string.IsNullOrWhiteSpace(txtNomeCad.Text))
+            {
+                MessageBox.Show("O campo Nome do Operador é obrigatório.");
+                txtNomeCad.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtEmailCad.Text) || !EmailValido(txtEmailCad.Text))
+            {
+                MessageBox.Show("Por favor, insira um e-mail válido.");
+                txtEmailCad.Focus();
+            }
+            else
+            {
+                MessageBox.Show("E-mail válido!");
+                // Continue com o restante da lógica de cadastro ou login
+            }
+
+            if (string.IsNullOrWhiteSpace(txtSenhaCad.Text))
+            {
+                MessageBox.Show("O campo Senha é obrigatório.");
+                txtSenhaCad.Focus();
+                return false;
+            }
+
+            return true; // Todos os campos estão preenchidos
+        }
+        private bool EmailValido(string email)
+        {
+            // Expressão regular para validar o e-mail
+            string padraoEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+            // Verifica se o e-mail corresponde ao padrão
+            return Regex.IsMatch(email, padraoEmail);
+        }
+
 
 
         private void label5_Click(object sender, EventArgs e)
@@ -51,46 +92,35 @@ namespace MercadaoRonirin
             this.Close();
         }
 
-        private async void btnCad_Click(object sender, EventArgs e)
+        private void btnCad_Click(object sender, EventArgs e)
         {
-         
-
-            string login = txtLoginCad.Text;
-            string email = txtEmailCad.Text;
-            string senha = txtSenhaCad.Text;
-
-            //string tipofuncionario = comboBox1.SelectedItem;
-
-
-            if (string.IsNullOrEmpty(login))
+            if (ValidarCamposOperador())
             {
-
-                MessageBox.Show("Insira um login");
-                if (string.IsNullOrEmpty(email))
+                int FuncFuncionari = CbServico.SelectedIndex + 1; //se for pra ediçao colocar sempre mais um
+                var operador = new OperadorCaixa
                 {
-                    MessageBox.Show("Insira um email");
-                    if (string.IsNullOrEmpty(senha))
-                    {
-                        MessageBox.Show("insira uma senha");
-                    }
-                    else
-                    {
-                        Funcionarios novoFuncionario = new Funcionarios("Login", "Email", "Senha");
+                    NomeOperador = txtNomeCad.Text, // Obtém o valor do campo de nome
+                    Email = txtEmailCad.Text,               // Obtém o valor do campo de email
+                    Senha = txtSenhaCad.Text,
+                    FuncFuncionario = FuncFuncionari
 
-                        // Salvando o funcionário no banco de dados
-                        novoFuncionario.SalvarNoBancoDeDados();
+                };
 
-                        Console.WriteLine("Funcionário salvo com sucesso!");
-                    }
-                }
+                var operadorService = new OperadorCaixaService();
+                operadorService.InserirOperadorCaixa(operador);
 
+                MessageBox.Show("Operador de caixa salvo com sucesso!");
+                PanalCad.Hide();
+
+            } // Código para inserir os dados no banco de dados
+
+            else
+            {
+                MessageBox.Show("Por favor, preencha todos os campos obrigatórios.");
             }
 
         }
     
-            
-        
-
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -109,11 +139,31 @@ namespace MercadaoRonirin
 
         private void btnLog_Click(object sender, EventArgs e)
         {
-            PontoVenda pontoVenda = new PontoVenda();
-            pontoVenda.Show();
+            // Obtenha os valores dos campos de entrada
+            string email = txtNomeLog.Text;
+            string senha = txtSenhaLog.Text;
+
+            // Instancia o serviço de OperadorCaixaService
+            var operadorService = new OperadorCaixaService();
+
+            // Chama o método LogarOperadorCaixa e verifica o retorno
+            int? idOperador = operadorService.LogarOperadorCaixa(email, senha);
+
+            if (idOperador.HasValue)
+            {
+                // Login bem-sucedido e operador logado com sucesso
+                MessageBox.Show("Login realizado com sucesso!");
+
+                // A função da próxima tela é automaticamente chamada no método LogarOperadorCaixa
+            }
+            else
+            {
+                // Exibe mensagem de erro para o usuário
+                MessageBox.Show("Falha no login. Verifique suas credenciais.");
+            }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+            private void label1_Click(object sender, EventArgs e)
         {
 
         }

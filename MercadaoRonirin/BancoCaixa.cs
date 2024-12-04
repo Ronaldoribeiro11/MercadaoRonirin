@@ -29,9 +29,11 @@ namespace MercadaoRonirin
                         {
                             return new Produtin
                             {
+
                                 CodigoBarras = reader["CodigoBarras"].ToString(),
                                 Nome = reader["Nome"].ToString(),
-                                ValorUnitario = (decimal)reader["ValorUnitario"]
+                                ValorUnitario = (decimal)reader["ValorUnitario"],
+                                ID_Produto = (int)reader["Id"]
                             };
                         }
                     }

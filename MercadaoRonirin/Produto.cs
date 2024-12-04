@@ -11,6 +11,7 @@ namespace MercadaoRonirin
     }
     public class Produtin
     {
+        public int ID_Produto { get; set; }
         public string CodigoBarras { get; set; }
         public string Nome { get; set; }
         public decimal ValorUnitario { get; set; }
